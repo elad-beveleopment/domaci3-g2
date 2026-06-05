@@ -105,6 +105,25 @@ if [ "$HTTP_STATUS" = "200" ] && echo "$BODY" | grep -q '"success":true'; then
   echo "[OK] Rezultat je uspešno poslat u Google Sheet."
   echo "[OK] ZIP dokaz je poslat na Google Drive."
   echo "[OK] Odgovor je sačuvan u: $UPLOAD_RESPONSE_FILE"
+  echo ""
+
+  echo "======================================"
+  echo "GAŠENJE DOCKER COMPOSE APLIKACIJE"
+  echo "======================================"
+
+  if [ -f "compose.yaml" ]; then
+    sudo docker compose down -v
+
+    if [ $? -eq 0 ]; then
+      echo "[OK] Izvršeno: sudo docker compose down -v"
+      echo "[OK] Kontejneri, mreža i volume-i iz compose projekta su uklonjeni."
+    else
+      echo "[UPOZORENJE] Upload je uspeo, ali docker compose down -v nije uspešno izvršen."
+    fi
+  else
+    echo "[UPOZORENJE] compose.yaml nije pronađen. Preskačem docker compose down -v."
+  fi
+
 else
   echo "[GREŠKA] Upload nije uspeo. HTTP status: $HTTP_STATUS"
   echo "Odgovor je sačuvan u: $UPLOAD_RESPONSE_FILE"
