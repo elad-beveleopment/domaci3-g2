@@ -488,25 +488,6 @@ if [ -f "$FRONTEND_ENV" ]; then
   cp "$FRONTEND_ENV" "$ARCHIVE_DIR/env/"
 fi
 
-if [ -f "backend/app.py" ]; then
-  mkdir -p "$ARCHIVE_DIR/backend"
-  cp "backend/app.py" "$ARCHIVE_DIR/backend/"
-fi
-
-if [ -f "backend/db.py" ]; then
-  mkdir -p "$ARCHIVE_DIR/backend"
-  cp "backend/db.py" "$ARCHIVE_DIR/backend/"
-fi
-
-if [ -f "db/init.sql" ]; then
-  mkdir -p "$ARCHIVE_DIR/db"
-  cp "db/init.sql" "$ARCHIVE_DIR/db/"
-fi
-
-if [ -f "db/my.cnf" ]; then
-  mkdir -p "$ARCHIVE_DIR/db"
-  cp "db/my.cnf" "$ARCHIVE_DIR/db/"
-fi
 
 if command -v zip > /dev/null 2>&1; then
   zip -r "$ZIP_FILE" "$ARCHIVE_DIR" > /dev/null
