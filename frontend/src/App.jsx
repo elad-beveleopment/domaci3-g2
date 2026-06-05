@@ -1,0 +1,16 @@
+import React, { useEffect, useState } from "react";
+import { createRoot } from "react-dom/client";
+import "./style.css";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+function App() {
+  const [form, setForm] = useState({ firstName: "", lastName: "", indexNumber: "", projectTitle: "", projectArea: "" });
+  const [projects, setProjects] = useState([]);
+  const [message, setMessage] = useState("");
+  const [dbStatus, setDbStatus] = useState("checking");
+  const loadProjects = async () => { try { const response = await fetch(`${API_URL}/projects`); const data = await response.json(); if (!response.ok) { setDbStatus("unavailable"); setProjects([]); return; } setDbStatus(data.databaseAvailable ? "available" : "unavailable"); setProjects(data.projects || []); } catch { setDbStatus("unavailable"); setProjects([]); } };
+  useEffect(() => { loadProjects(); }, []);
+  const handleChange = (event) => { const { name, value } = event.target; setForm((current) => ({ ...current, [name]: value })); };
+  const handleSubmit = async (event) => { event.preventDefault(); setMessage(""); try { const response = await fetch(`${API_URL}/projects`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) }); const data = await response.json(); if (!response.ok) { setMessage(data.message || "Došlo je do greške."); return; } setMessage("Projekat je uspešno dodat."); setForm({ firstName: "", lastName: "", indexNumber: "", projectTitle: "", projectArea: "" }); loadProjects(); } catch { setMessage("Backend servis nije dostupan."); } };
+  return <main className="container"><header><h1>Student Project Tracker</h1><p>Docker Compose aplikacija: React frontend + Flask backend + MySQL database</p></header><section className="status-card"><strong>Status baze: </strong>{dbStatus === "available" && <span className="ok">dostupna</span>}{dbStatus === "unavailable" && <span className="bad">nije dostupna</span>}{dbStatus === "checking" && <span>provera...</span>}</section><section className="grid"><form className="card" onSubmit={handleSubmit}><h2>Dodaj projekat</h2><label>Ime</label><input name="firstName" value={form.firstName} onChange={handleChange} required /><label>Prezime</label><input name="lastName" value={form.lastName} onChange={handleChange} required /><label>Broj indeksa</label><input name="indexNumber" value={form.indexNumber} onChange={handleChange} required /><label>Naziv projekta</label><input name="projectTitle" value={form.projectTitle} onChange={handleChange} required /><label>Oblast projekta</label><input name="projectArea" value={form.projectArea} onChange={handleChange} required /><button type="submit">Sačuvaj</button>{message && <p className="message">{message}</p>}</form><section className="card"><h2>Lista projekata</h2>{projects.length === 0 ? <p>Nema unetih projekata.</p> : <table><thead><tr><th>Student</th><th>Indeks</th><th>Projekat</th><th>Oblast</th></tr></thead><tbody>{projects.map((project) => <tr key={project.id}><td>{project.firstName} {project.lastName}</td><td>{project.indexNumber}</td><td>{project.projectTitle}</td><td>{project.projectArea}</td></tr>)}</tbody></table>}</section></section></main>;
+}
+createRoot(document.getElementById("root")).render(<App />);

@@ -1,0 +1,13 @@
+frontend/node_modules/
+backend/__pycache__/
+backend/*.pyc
+.env
+*.env.local
+compose.yaml
+*.zip
+provera-*.txt
+sumarna-provera-*.txt
+dokazi-*/
+.DS_Store
+.vscode/
+.idea/
