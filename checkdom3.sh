@@ -149,7 +149,7 @@ if [ -f "$COMPOSE_FILE" ] \
   && grep -Eq "^[[:space:]]*name:[[:space:]]*[\"']?${PROJECT_NAME}[\"']?" "$COMPOSE_FILE"; then
   print_result "1" "OK" "compose.yaml postoji i naziv projekta je $PROJECT_NAME."
 else
-  print_result "1" "NIJE OK" "Nedostaje compose.yaml ili naziv projekta nije $PROJECT_NAME."
+  print_result "1" "NIJE OK" "Nedostaje compose.yaml ili naziv projekta nije u odgovarajućem formatu."
 fi
 
 # --------------------------------------
@@ -206,7 +206,7 @@ if [ -f "$COMPOSE_FILE" ] \
   && [ "$BACKEND_ENV_OK" = true ]; then
   print_result "3" "OK" "Servisi imaju odgovarajuće build/image vrednosti, nazive kontejnera, env podešavanja, mrežu i DB_HOST=$DB_CONT."
 else
-  print_result "3" "NIJE OK" "Nedostaju očekivane build/image/container/env/network vrednosti, MySQL image nije definisan ili DB_HOST nije podešen na $DB_CONT u $BACKEND_ENV."
+  print_result "3" "NIJE OK" "Nedostaju očekivane build/image/container/env/network vrednosti, MySQL image nije definisan ili DB_HOST nije podešen u backend-u."
 fi
 
 # --------------------------------------
@@ -251,7 +251,7 @@ if [ -f "$COMPOSE_FILE" ] \
   && [ "$FRONTEND_ENV_OK" = true ]; then
   print_result "5" "OK" "Backend je dostupan na portu 5000, frontend na portu 7000, frontend.env pokazuje na backend port 5000 i zavisnosti su definisane."
 else
-  print_result "5" "NIJE OK" "Nedostaju portovi 5000/7000, frontend.env nije podešen na port 5000 ili depends_on uslovi nisu definisani."
+  print_result "5" "NIJE OK" "Nedostaju portovi definisani zadatkom, frontend.env nije podešen na odgovarajući port ili depends_on uslovi nisu definisani."
 fi
 
 # --------------------------------------
@@ -289,7 +289,7 @@ if [ -f "$COMPOSE_FILE" ] \
   && network_exists "$NETWORK"; then
   print_result "7" "OK" "Mreža $NETWORK je eksplicitno definisana u compose.yaml i kreirana u Docker-u."
 else
-  print_result "7" "NIJE OK" "Mreža $NETWORK nije eksplicitno definisana kroz name: ili nije kreirana."
+  print_result "7" "NIJE OK" "Mreža nije eksplicitno definisana kroz name: ili nije kreirana."
 fi
 
 # --------------------------------------
@@ -307,7 +307,7 @@ if [ -f "$COMPOSE_FILE" ] \
   && [ -n "$REAL_VOLUME" ]; then
   print_result "8" "OK" "Database volume je definisan i kreiran kao Docker volume: $REAL_VOLUME."
 else
-  print_result "8" "NIJE OK" "Database volume nije definisan ili nije kreiran. Očekivano: $COMPOSE_VOLUME ili $EXPLICIT_VOLUME."
+  print_result "8" "NIJE OK" "Database volume nije definisan na odgovarajući način ili nije kreiran."
 fi
 
 # --------------------------------------
