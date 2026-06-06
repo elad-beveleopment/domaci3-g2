@@ -1,0 +1,63 @@
+name: "ar20240026"
+
+services:
+  backend:
+    build:
+      context: ./backend
+    image: ar20240026-img1
+    container_name: ar20240026-back
+    ports:
+      - "5000:3000"
+    networks:
+      - ar20240026-network
+    volumes:
+      - ./backend:/app
+      - /app/__pycache__
+    env_file:
+      - ./env/backend.env
+    depends_on:
+      database:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+    image: ar20240026-img2
+    container_name: ar20240026-front
+    ports:
+      - "7000:3000"
+    networks:
+      - ar20240026-network
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    env_file:
+      - ./env/frontend.env
+    depends_on:
+      backend:
+        condition: service_started
+
+  database:
+    image: mysql:latest
+    container_name: ar20240026-db
+    env_file:
+      - ./env/mysql.env
+    networks:
+      - ar20240026-network
+    volumes:
+      - ar20240026-mysql-data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./db/my.cnf:/etc/mysql/conf.d/my-custom.cnf:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "student", "--password=student"]
+      interval: 10s
+      timeout: 10s
+      retries: 6
+
+networks:
+  ar20240026-network:
+    name: ar20240026-network
+    driver: bridge
+volumes:
+  ar20240026-mysql-data:
+    name: ar20240026-mysql-data
